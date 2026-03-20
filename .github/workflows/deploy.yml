@@ -9,15 +9,29 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
+    env:
+      DOCKERHUB_USERNAME: dat07022004
 
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
 
+      - name: Validate Docker credentials
+        run: |
+          if [ -z "${DOCKERHUB_USERNAME}" ]; then
+            echo "DOCKERHUB_USERNAME is empty"
+            exit 1
+          fi
+          if [ -z "${{ secrets.DOCKER_ACCESS_TOKEN }}" ]; then
+            echo "Secret DOCKER_ACCESS_TOKEN is missing or empty"
+            exit 1
+          fi
+
       - name: Docker Login
         uses: docker/login-action@v4.0.0
         with:
-          username: dat07022004
+          registry: docker.io
+          username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
 
       - name: Build and push Docker images
@@ -27,5 +41,5 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            dat07022004/nguyenthanhdatdocker:latest
-            dat07022004/nguyenthanhdatdocker:${{ github.sha }}
+            ${{ env.DOCKERHUB_USERNAME }}/nguyenthanhdatdocker:latest
+            ${{ env.DOCKERHUB_USERNAME }}/nguyenthanhdatdocker:${{ github.sha }}
