@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:replace="~{layout :: layout(~{::content})}">
+
+<head>
+</head>
+
+<body>
+    <div th:fragment="content">
+        <div class="d-flex justify-content-end align-items-center mb-3">
+            <!-- Removed header text as requested -->
+            <div sec:authorize="hasAnyAuthority('ADMIN','MANAGER')">
+                <a sec:authorize="hasAuthority('ADMIN')" href="/categories/add" class="btn btn-light border me-2"><i class="fas fa-folder-plus"></i> Thêm danh
+                    mục</a>
+                <a href="/products/add" class="btn btn-primary"><i class="fas fa-plus"></i> Thêm sản phẩm</a>
+            </div>
+        </div>
+
+        <!-- Banner danh mục đang xem -->
+        <div th:if="${selectedCategory != null}" class="mb-4 px-3 py-3 rounded-3 d-flex align-items-center gap-3"
+            style="background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+            <!-- Ảnh category -->
+            <div
+                style="width:56px;height:56px;border-radius:12px;overflow:hidden;flex-shrink:0;background:#fce4ec;display:flex;align-items:center;justify-content:center;">
+                <img th:if="${selectedCategory.image != null and !#strings.isEmpty(selectedCategory.image)}"
+                    th:src="${selectedCategory.image}" style="width:56px;height:56px;object-fit:cover;" alt="">
+                <img th:if="${selectedCategory.image == null or #strings.isEmpty(selectedCategory.image)}"
+                    src="https://placehold.co/56x56/fce4ec/cd1818?text=Cat"
+                    style="width:56px;height:56px;object-fit:cover;" alt="">
+            </div>
+            <div style="flex:1;">
+                <div class="text-muted" style="font-size:12px;">Đang xem danh mục</div>
+                <div class="fw-bold" style="font-size:18px;" th:text="${selectedCategory.name}"></div>
+            </div>
+            <a href="/products" class="btn btn-sm btn-outline-secondary" style="border-radius:8px;">
+                <i class="fas fa-times me-1"></i>Xem tất cả
+            </a>
+        </div>
+
+        <!-- Flash Sale Banner -->
+        <div class="container mb-4">
+            <div class="bg-white rounded-4 p-2 d-flex align-items-center justify-content-between shadow-sm"
+                style="max-width: 800px; margin: 0 auto; min-height: 80px;">
+                <div class="d-flex align-items-center bg-danger text-white rounded-4 px-3 py-2"
+                    style="gap: 10px; height: 100%;">
+                    <span class="fw-bold small text-nowrap">Chỉ còn:</span>
+                    <div class="d-flex gap-1 fw-bold fs-5">
+                        <span class="bg-white text-danger px-2 rounded">01</span>:
+                        <span class="bg-white text-danger px-2 rounded">04</span>:
+                        <span class="bg-white text-danger px-2 rounded">18</span>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-around flex-grow-1 text-center text-muted" style="font-size: 13px;">
+                    <div>
+                        <div>Sắp diễn ra</div>
+                        <div class="fw-bold fs-5 text-dark">12:00</div>
+                    </div>
+                    <div>
+                        <div>Sắp diễn ra</div>
+                        <div class="fw-bold fs-5 text-dark">15:00</div>
+                    </div>
+                    <div>
+                        <div>Sắp diễn ra</div>
+                        <div class="fw-bold fs-5 text-dark">18:00</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====== SECTION KHUYẾN MÃI NỔI BẬT ====== -->
+        <div th:if="${!#lists.isEmpty(promotedProducts)}" class="mb-4">
+            <!-- Header section KM -->
+            <div class="d-flex align-items-center justify-content-between mb-3 px-2 py-2 rounded-3"
+                style="background:linear-gradient(90deg,#cd1818 0%,#ff6b35 100%);">
+                <div class="d-flex align-items-center gap-2">
+                    <span style="font-size:22px;">🔥</span>
+                    <div>
+                        <div class="fw-bold text-white" style="font-size:16px;letter-spacing:0.5px;">KHUYẾN MÃI NỔI BẬT
+                        </div>
+                        <div class="text-white" style="font-size:11px;opacity:0.85;"
+                            th:text="'Có ' + ${#lists.size(promotedProducts)} + ' sản phẩm đang khuyến mãi'"></div>
+                    </div>
+                </div>
+                <span class="badge bg-white text-danger fw-bold"
+                    style="font-size:12px;border-radius:20px;padding:6px 14px;">
+                    <i class="fas fa-fire-alt me-1"></i>HOT
+                </span>
+            </div>
+            <!-- Grid sản phẩm KM -->
+            <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-2">
+                <div class="col" th:each="product : ${promotedProducts}">
+                    <div class="card h-100 shadow-sm product-card"
+                        style="border-radius:8px;overflow:hidden;position:relative;border:2px solid #cd1818;">
+                        <!-- Actions -->
+                        <div sec:authorize="hasAnyAuthority('ADMIN','MANAGER')" class="action-buttons position-absolute top-0 end-0 p-2" style="z-index:10;display:none;">
+                            <a th:href="@{/products/edit/{id}(id=${product.id})}" class="btn btn-sm btn-primary me-1"
+                                title="Sửa">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a th:href="@{/products/delete/{id}(id=${product.id})}" class="btn btn-sm btn-danger"
+                                title="Xóa" onclick="return confirm('Xóa sản phẩm này?')">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                        <!-- Badge khuyến mãi -->
+                        <div style="position:absolute;top:0;left:0;z-index:5;">
+                            <span
+                                style="display:inline-flex;align-items:center;gap:3px;background:linear-gradient(90deg,#cd1818,#ff6b35);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-bottom-right-radius:8px;">
+                                <i class="fas fa-fire-alt"></i> KM
+                            </span>
+                        </div>
+                        <!-- Badge trả góp -->
+                        <div
+                            style="position:absolute;top:0;right:0;background:#f1f1f1;font-size:10px;padding:2px 5px;border-bottom-left-radius:4px;">
+                            Trả góp 0%</div>
+                        <!-- Ảnh -->
+                        <div class="text-center p-2">
+                            <img th:src="@{${product.image != null ? product.image : 'https://placehold.co/160x160'}}"
+                                class="card-img-top" alt="" style="max-height:160px;width:auto;object-fit:contain;">
+                        </div>
+                        <div class="card-body p-2 d-flex flex-column">
+                            <h6 class="card-title mb-1"
+                                style="font-size:13px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;height:32px;">
+                                <a th:href="${#authorization.expression('hasAnyAuthority(''ADMIN'',''MANAGER'')')} ? @{/products/edit/{id}(id=${product.id})} : @{/products}"
+                                    class="text-decoration-none text-dark" th:text="${product.name}"></a>
+                            </h6>
+                            <div class="mt-auto">
+                                <div class="text-danger fw-bold" style="font-size:14px;"
+                                    th:text="${(product.promoted and product.promotionPrice != null and product.promotionQuantity != null and product.promotionQuantity > 0 and product.promotionPrice < product.price) ? #numbers.formatDecimal(product.promotionPrice,0,'COMMA',0,'POINT') + '₫' : #numbers.formatDecimal(product.price,0,'COMMA',0,'POINT') + '₫'}"></div>
+                                <div class="d-flex align-items-center" style="font-size:11px;"
+                                    th:if="${product.promoted and product.promotionPrice != null and product.promotionQuantity != null and product.promotionQuantity > 0 and product.promotionPrice < product.price}">
+                                    <span class="text-decoration-line-through text-muted me-1"
+                                        th:text="${#numbers.formatDecimal(product.price,0,'COMMA',0,'POINT')} + '₫'"></span>
+                                    <span class="text-danger"
+                                        th:text="${'-' + #numbers.formatDecimal((1 - product.promotionPrice / product.price) * 100,0,'COMMA',0,'POINT') + '%'}">-10%</span>
+                                </div>
+                                <div class="text-muted" style="font-size:11px;"
+                                    th:if="${product.promoted and product.promotionQuantity != null and product.promotionQuantity > 0}"
+                                    th:text="${'Còn ' + product.promotionQuantity + ' suất khuyến mãi'}">
+                                </div>
+                                <form sec:authorize="!hasAuthority('MANAGER')" th:action="@{/cart/add}" method="post" class="mt-2">
+                                    <input type="hidden" name="productId" th:value="${product.id}">
+                                    <div class="input-group input-group-sm mb-2 quantity-stepper">
+                                        <button type="button" class="btn btn-outline-secondary qty-btn" data-action="minus">-</button>
+                                        <input type="number" name="quantity" class="form-control text-center qty-input" value="1" min="1" step="1">
+                                        <button type="button" class="btn btn-outline-secondary qty-btn" data-action="plus">+</button>
+                                    </div>
+                                    <button type="submit" class="btn btn-danger w-100 py-1"
+                                        style="font-size:12px;border-radius:4px;">
+                                        <i class="fas fa-shopping-cart me-1"></i>Add to Cart
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====== TẤT CẢ SẢN PHẨM ====== -->
+        <div th:if="${!#lists.isEmpty(promotedProducts)}" class="d-flex align-items-center gap-2 mb-3">
+            <div style="flex:1;height:1px;background:#eee;"></div>
+            <span class="text-muted fw-semibold" style="font-size:13px;white-space:nowrap;">Tất cả sản phẩm</span>
+            <div style="flex:1;height:1px;background:#eee;"></div>
+        </div>
+
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-2">
+            <div class="col" th:each="product : ${products}">
+
+                <div class="card h-100 border-0 shadow-sm product-card"
+                    style="border-radius: 4px; overflow: hidden; position: relative;">
+                    <!-- Hover Actions (Edit/Delete) -->
+                    <div sec:authorize="hasAnyAuthority('ADMIN','MANAGER')" class="action-buttons position-absolute top-0 end-0 p-2" style="z-index: 10; display: none;">
+                        <a th:href="@{/products/edit/{id}(id=${product.id})}" class="btn btn-sm btn-primary me-1"
+                            title="Sửa">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a th:href="@{/products/delete/{id}(id=${product.id})}" class="btn btn-sm btn-danger"
+                            title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+
+                    <!-- Badge khuyến mãi (nếu promoted) -->
+                    <div th:if="${product.promoted}" style="position:absolute;top:0;left:0;z-index:5;">
+                        <span
+                            style="display:inline-flex;align-items:center;gap:3px;background:linear-gradient(90deg,#cd1818,#ff6b35);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-bottom-right-radius:8px;">
+                            <i class="fas fa-fire-alt"></i> KM
+                        </span>
+                    </div>
+
+                    <!-- Badge: Installment 0% -->
+                    <div
+                        style="position: absolute; top: 0; right: 0; background-color: #f1f1f1; font-size: 10px; padding: 2px 5px; border-bottom-left-radius: 4px;">
+                        Trả góp 0%
+                    </div>
+
+                    <!-- Product Image -->
+                    <div class="text-center p-2">
+                        <img th:src="@{${product.image != null ? product.image : 'https://placehold.co/160x160'}}"
+                            class="card-img-top" alt="Product Image"
+                            style="max-height: 160px; width: auto; object-fit: contain;">
+                    </div>
+
+                    <div class="card-body p-2 d-flex flex-column">
+                        <!-- Name -->
+                        <h6 class="card-title text-primary mb-1"
+                            style="font-size: 13px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 32px;">
+                            <a th:href="${#authorization.expression('hasAnyAuthority(''ADMIN'',''MANAGER'')')} ? @{/products/edit/{id}(id=${product.id})} : @{/products}"
+                                class="text-decoration-none text-dark"
+                                th:text="${product.name}">Samsung Galaxy A54 5G</a>
+                        </h6>
+
+                        <!-- Option badge (Static) -->
+                        <div class="mb-1">
+                            <span class="badge bg-light text-dark border fw-normal"
+                                style="font-size: 10px;">8GB/128GB</span>
+                        </div>
+
+                        <!-- Price Section -->
+                        <div class="mt-auto">
+                            <!-- Discounted Price (Main) -->
+                            <div class="text-danger fw-bold" style="font-size: 14px;"
+                                th:text="${(product.promoted and product.promotionPrice != null and product.promotionQuantity != null and product.promotionQuantity > 0 and product.promotionPrice < product.price) ? #numbers.formatDecimal(product.promotionPrice, 0, 'COMMA', 0, 'POINT') + '₫' : #numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + '₫'}">
+                                10.490.000₫
+                            </div>
+
+                            <!-- Original Price & Discount (Static Simulation) -->
+                            <div class="d-flex align-items-center" style="font-size: 11px;"
+                                th:if="${product.promoted and product.promotionPrice != null and product.promotionQuantity != null and product.promotionQuantity > 0 and product.promotionPrice < product.price}">
+                                <span class="text-decoration-line-through text-muted me-1"
+                                    th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + '₫'">11.490.000₫</span>
+                                <span class="text-danger"
+                                    th:text="${'-' + #numbers.formatDecimal((1 - product.promotionPrice / product.price) * 100,0,'COMMA',0,'POINT') + '%'}">-10%</span>
+                            </div>
+
+                            <!-- Rating (Static) -->
+                            <div class="text-warning my-1" style="font-size: 10px;">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="text-muted">(123)</span>
+                            </div>
+
+                            <!-- Progress Bar "Con 9/10 suat" -->
+                            <div class="position-relative mt-2"
+                                th:if="${product.promoted and product.promotionQuantity != null and product.promotionQuantity > 0}"
+                                style="background-color: #ffd400; border-radius: 10px; height: 18px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                <div
+                                    style="position: absolute; left: 0; top: 0; bottom: 0; width: 80%; background: linear-gradient(90deg, #ffecb3, #ffca28); opacity: 0.5;">
+                                </div>
+                                <div style="position: absolute; left: 5px; color: #d01c24; font-size: 12px;"><i
+                                        class="fas fa-fire-alt"></i></div>
+                                <span style="position: relative; font-size: 10px; font-weight: bold; color: #333;">Còn
+                                    <span th:text="${product.promotionQuantity}">0</span> suất KM</span>
+                            </div>
+
+                            <!-- Add to Cart Button -->
+                            <form sec:authorize="!hasAuthority('MANAGER')" th:action="@{/cart/add}" method="post" class="mt-2">
+                                <input type="hidden" name="productId" th:value="${product.id}">
+                                <div class="input-group input-group-sm mb-2 quantity-stepper">
+                                    <button type="button" class="btn btn-outline-secondary qty-btn" data-action="minus">-</button>
+                                    <input type="number" name="quantity" class="form-control text-center qty-input" value="1" min="1" step="1">
+                                    <button type="button" class="btn btn-outline-secondary qty-btn" data-action="plus">+</button>
+                                </div>
+                                <button type="submit" class="btn btn-outline-primary w-100 py-1"
+                                    style="font-size: 12px; border-radius: 4px;">
+                                    <i class="fas fa-shopping-cart me-1"></i>Add to Cart
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                document.addEventListener('click', function (event) {
+                    const button = event.target.closest('.qty-btn');
+                    if (!button) {
+                        return;
+                    }
+
+                    const stepper = button.closest('.quantity-stepper');
+                    const input = stepper ? stepper.querySelector('.qty-input') : null;
+                    if (!input) {
+                        return;
+                    }
+
+                    const currentValue = parseInt(input.value, 10) || 1;
+                    const min = parseInt(input.min, 10) || 1;
+
+                    if (button.dataset.action === 'plus') {
+                        input.value = currentValue + 1;
+                    } else {
+                        input.value = Math.max(min, currentValue - 1);
+                    }
+                });
+
+                document.addEventListener('input', function (event) {
+                    if (!event.target.classList.contains('qty-input')) {
+                        return;
+                    }
+
+                    const input = event.target;
+                    const min = parseInt(input.min, 10) || 1;
+                    const value = parseInt(input.value, 10) || min;
+                    if (value < min) {
+                        input.value = min;
+                    }
+                });
+            </script>
+            <style>
+                .product-card:hover .action-buttons {
+                    display: block !important;
+                }
+
+                .product-card:hover {
+                    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+                    transform: translateY(-2px);
+                    transition: all 0.2s;
+                }
+            </style>
+
+            <!-- Example Static Cards to fill grid if empty (for visualization) -->
+            <div class="col" th:if="${#lists.isEmpty(products)}">
+                <div class="card h-100 border-0 shadow-sm p-2 text-center">
+                    <p class="text-muted">Chưa có sản phẩm nào.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

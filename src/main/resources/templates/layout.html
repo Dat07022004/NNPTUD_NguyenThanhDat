@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:fragment="layout(content)">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thegioididong.com - Điện thoại, Laptop, Phụ kiện, Đồng hồ chính hãng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --tgdd-yellow: #FFD400;
+            --tgdd-red: #cd1818;
+            --tgdd-bg: #f3f3f3;
+        }
+
+        html {
+            min-height: 100%;
+        }
+
+        body {
+            /* Ensure background covers the entire page */
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+
+            /* Full Red Background */
+            background-color: #cd1818;
+            background-image: linear-gradient(180deg, #cd1818 0%, #900000 100%);
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 14px;
+        }
+
+        /* Top Banner */
+        .top-banner {
+            background-color: var(--tgdd-red);
+            text-align: center;
+        }
+
+        .top-banner img {
+            max-width: 1200px;
+            width: 100%;
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--tgdd-yellow);
+            padding-bottom: 0;
+            position: relative;
+            z-index: 100;
+        }
+
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            gap: 15px;
+        }
+
+        /* Logo */
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #000;
+            flex-shrink: 0;
+        }
+
+        .logo-icon {
+            background: #000;
+            color: var(--tgdd-yellow);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 5px;
+            font-size: 14px;
+        }
+
+        .logo-text {
+            font-weight: 900;
+            font-size: 20px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text small {
+            font-size: 11px;
+        }
+
+        /* Search */
+        .search-container {
+            flex-grow: 1;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            border: none;
+            border-radius: 4px;
+            padding: 9px 40px 9px 15px;
+            font-size: 13px;
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 0px;
+            top: 0;
+            height: 100%;
+            width: 40px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: #333;
+        }
+
+        /* Utility Links */
+        .utility-links {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .util-item {
+            text-decoration: none;
+            color: #333;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            padding: 5px 8px;
+            border-radius: 4px;
+        }
+
+        .util-item:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .location-badge {
+            background-color: #FFBC06;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+
+        /* ========== NAVIGATION & MEGA MENU ========== */
+        .nav-bar {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0 0 0;
+            position: relative;
+        }
+
+        .nav-item {
+            text-decoration: none;
+            color: #000;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            padding: 8px 4px;
+            white-space: nowrap;
+            position: relative;
+            border-bottom: 3px solid transparent;
+            transition: border-color 0.15s;
+        }
+
+        .nav-item:hover {
+            border-bottom-color: #cd1818;
+            color: #cd1818;
+        }
+
+        .nav-item i.nav-icon {
+            margin-right: 5px;
+            font-size: 15px;
+        }
+
+        .nav-item i.nav-caret {
+            margin-left: 3px;
+            font-size: 10px;
+        }
+
+        /* Mega-menu dropdown */
+        .nav-wrapper {
+            position: relative;
+        }
+
+        .mega-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #fff;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            border-top: 3px solid #cd1818;
+            border-radius: 0 0 6px 6px;
+            min-width: 760px;
+            padding: 20px 24px;
+            z-index: 9999;
+            animation: fadeSlideDown 0.18s ease;
+        }
+
+        /* Right-align last few menus so they don't overflow */
+        .nav-wrapper:nth-last-child(-n+3) .mega-menu {
+            left: auto;
+            right: 0;
+        }
+
+        @keyframes fadeSlideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .nav-wrapper:hover .mega-menu,
+        .nav-wrapper.active .mega-menu {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0;
+        }
+
+        /* Group block inside mega menu */
+        .mega-group {
+            width: 50%;
+            padding: 0 12px 16px 0;
+        }
+
+        .mega-group h6 {
+            font-size: 13px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .mega-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 0;
+        }
+
+        .mega-sub-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #444;
+            font-size: 11.5px;
+            width: 80px;
+            text-align: center;
+            padding: 6px 4px;
+            border-radius: 6px;
+            transition: background 0.15s;
+        }
+
+        .mega-sub-item:hover {
+            background: #fff0f0;
+            color: #cd1818;
+        }
+
+        .mega-sub-item img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            border-radius: 4px;
+            margin-bottom: 6px;
+            flex-shrink: 0;
+            transition: transform 0.15s;
+        }
+
+        .mega-sub-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .mega-sub-item .badge-hot {
+            font-size: 9px;
+            background: #cd1818;
+            color: #fff;
+            border-radius: 3px;
+            padding: 1px 4px;
+            margin-top: -4px;
+            margin-bottom: 3px;
+            display: block;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .mega-sub-item .badge-new {
+            font-size: 9px;
+            background: #0066cc;
+            color: #fff;
+            border-radius: 3px;
+            padding: 1px 4px;
+            margin-top: -4px;
+            margin-bottom: 3px;
+            display: block;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+
+        /* Banner Area */
+        .banner-section {
+            padding-bottom: 20px;
+        }
+
+        .big-banner-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 20px;
+        }
+
+        /* Side Banners/Labels */
+        .side-banner-left,
+        .side-banner-right {
+            position: fixed;
+            top: 150px;
+            /* Adjusted to sit better */
+            width: 160px;
+            /* Increased width for better visibility */
+            z-index: 10;
+            pointer-events: none;
+            /* Let clicks pass through if they cover content */
+        }
+
+        .side-banner-left {
+            left: 10px;
+        }
+
+        .side-banner-right {
+            right: 10px;
+        }
+
+        .side-banner-left img,
+        .side-banner-right img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        @media (max-width: 1500px) {
+
+            .side-banner-left,
+            .side-banner-right {
+                display: none;
+            }
+        }
+
+        /* Content */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: transparent;
+            /* Changed from #fff to comply with user request */
+            min-height: 500px;
+            padding: 20px 0;
+            /* Reduced side padding since cards have spacing */
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Side Banners/Labels -->
+    <div class="side-banner-left">
+        <img src="https://cdnv2.tgdd.vn/webmwg/2024/ContentMwg/images/lunar_new_year/2026/TGDD/label-left.png"
+            alt="Tet Left Decoration">
+    </div>
+    <div class="side-banner-right">
+        <img src="https://cdnv2.tgdd.vn/webmwg/2024/ContentMwg/images/lunar_new_year/2026/TGDD/label-right.png"
+            alt="Tet Right Decoration">
+    </div>
+
+    <!-- Top Banner -->
+    <div class="top-banner">
+        <img src="/images/top-banner.png" alt="Tet Sale">
+    </div>
+
+    <header>
+        <div class="header-top">
+            <!-- Logo -->
+            <a href="/products" class="logo">
+                <div class="logo-icon"><i class="fas fa-user"></i></div>
+                <span class="logo-text">thegioididong<small>.com</small></span>
+            </a>
+
+            <!-- Search -->
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Bạn tìm gì... (Ví dụ: iPhone 15)">
+                <button class="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+
+            <!-- Utilities -->
+            <div class="utility-links">
+                <div sec:authorize="isAuthenticated()" class="util-item">
+                    <i class="fas fa-user-circle me-1"></i>
+                    <span th:text="${#authentication.name}">User</span>
+                </div>
+
+                <a sec:authorize="isAnonymous()" th:href="@{/login}" class="util-item">
+                    <i class="fas fa-sign-in-alt me-1"></i>
+                    Đăng nhập
+                </a>
+                <a sec:authorize="isAnonymous()" th:href="@{/register}" class="util-item">
+                    <i class="fas fa-user-plus me-1"></i>
+                    Đăng ký
+                </a>
+
+                <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" class="m-0">
+                    <button type="submit" class="util-item border-0 bg-transparent">
+                        <i class="fas fa-sign-out-alt me-1"></i>
+                        Đăng xuất
+                    </button>
+                </form>
+
+                <a href="#" class="util-item">
+                    <div class="d-flex flex-column text-end me-0">
+                        <span>Lịch sử</span>
+                        <b>Đơn hàng</b>
+                    </div>
+                </a>
+
+                <a href="#" class="util-item text-center">
+                    <i class="fas fa-shopping-cart fs-5 me-1"></i>
+                    <span class="d-none d-xl-block">Giỏ hàng</span>
+                </a>
+
+                <a sec:authorize="hasAuthority('USER')" th:href="@{/loyalty/vouchers}" class="util-item text-center">
+                    <i class="fas fa-ticket-alt fs-5 me-1"></i>
+                    <span class="d-none d-xl-block">Đổi điểm</span>
+                </a>
+
+                <div class="d-flex flex-column align-items-center justify-content-center px-2"
+                    style="font-size: 10px; line-height: 1.2;">
+                    <a href="#" class="text-dark text-decoration-none">24h<br>Công nghệ</a>
+                </div>
+                <div class="d-flex flex-column align-items-center justify-content-center px-2 border-start border-dark border-opacity-10"
+                    style="font-size: 10px; line-height: 1.2;">
+                    <a href="#" class="text-dark text-decoration-none">Hỏi đáp</a>
+                </div>
+
+                <a href="#" class="location-badge text-decoration-none">
+                    <i class="fas fa-map-marker-alt me-1"></i>
+                    Hồ Chí Minh
+                    <i class="fas fa-caret-down ms-1"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-bar">
+
+            <!-- ====== DANH MỤC TỪ CƠ SỞ DỮ LIỆU ====== -->
+            <div class="nav-wrapper" th:if="${allCategories != null}">
+                <a href="/products" class="nav-item" style="font-weight:700;color:#cd1818;">
+                    <i class="fas fa-th-large nav-icon"></i> Danh mục
+                    <i class="fas fa-caret-down nav-caret"></i>
+                </a>
+                <div class="mega-menu" style="min-width:680px;">
+
+                    <!-- Có dữ liệu -->
+                    <div th:if="${!#lists.isEmpty(allCategories)}" style="width:100%;">
+                        <div
+                            style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #eee;">
+                            <h6 style="margin:0;font-size:14px;font-weight:700;color:#333;">
+                                <i class="fas fa-layer-group me-1" style="color:#cd1818;"></i>
+                                Tất cả danh mục
+                            </h6>
+                            <a sec:authorize="hasAuthority('ADMIN')" href="/categories/add" class="btn btn-sm"
+                                style="background:#fed700;border:none;color:#333;font-size:11px;font-weight:600;border-radius:6px;padding:3px 10px;">
+                                <i class="fas fa-plus me-1"></i>Thêm mới
+                            </a>
+                        </div>
+                        <div style="display:flex;flex-wrap:wrap;gap:20px 0;">
+                            <!-- Vòng lặp các danh mục Gốc (Cấp 1) -->
+                            <div th:each="cat : ${allCategories}" class="mega-group"
+                                style="min-width: 160px; max-width: 220px; flex: 1;">
+                                <!-- Tiêu đề danh mục Cấp 1 -->
+                                <h6
+                                    style="margin-bottom:12px; font-weight:700; border-bottom:2px solid #f1f1f1; padding-bottom:8px;">
+                                    <a th:href="@{/products(categoryId=${cat.id})}"
+                                        style="color:#cd1818; text-decoration:none; display:flex; align-items:center; gap:8px;">
+                                        <img th:if="${cat.image != null and !#strings.isEmpty(cat.image)}"
+                                            th:src="${cat.image}"
+                                            style="width:24px;height:24px;object-fit:cover;border-radius:4px;background:#f5f5f5;"
+                                            onerror="this.src='https://placehold.co/24x24?text=Error'" alt="">
+                                        <img th:if="${cat.image == null or #strings.isEmpty(cat.image)}"
+                                            src="https://placehold.co/24x24/fce4ec/cd1818?text=Cat"
+                                            style="width:24px;height:24px;object-fit:cover;border-radius:4px;" alt="">
+                                        <span th:text="${cat.name}"></span>
+                                    </a>
+                                </h6>
+                                <!-- Vòng lặp các danh mục Con (Cấp 2) -->
+                                <div class="mega-items"
+                                    style="display:grid; grid-template-columns: repeat(2, 1fr); gap:6px;">
+                                    <a th:each="subCat : ${cat.subCategories}"
+                                        th:href="@{/products(categoryId=${subCat.id})}" class="mega-sub-item"
+                                        style="padding:4px; border-radius:6px; display:flex; flex-direction:column; align-items:center; text-align:center; transition:background 0.2s; width: 100%;">
+                                        <img th:if="${subCat.image != null and !#strings.isEmpty(subCat.image)}"
+                                            th:src="${subCat.image}"
+                                            style="width:36px;height:36px;object-fit:cover;border-radius:6px;background:#f5f5f5;"
+                                            onerror="this.src='https://placehold.co/36x36?text=C'" alt="">
+                                        <img th:if="${subCat.image == null or #strings.isEmpty(subCat.image)}"
+                                            src="https://placehold.co/36x36/f1f1f1/666?text=C2"
+                                            style="width:36px;height:36px;object-fit:cover;border-radius:6px;" alt="">
+                                        <span th:text="${subCat.name}"
+                                            style="font-size:11px; margin-top:4px; color:#444;"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chưa có category nào -->
+                    <div th:if="${#lists.isEmpty(allCategories)}"
+                        style="width:100%;text-align:center;padding:24px 0;color:#999;">
+                        <i class="fas fa-inbox" style="font-size:36px;display:block;margin-bottom:10px;color:#ddd;"></i>
+                        <p style="margin:0 0 12px;font-size:13px;">Chưa có danh mục nào</p>
+                        <a sec:authorize="hasAuthority('ADMIN')" href="/categories/add" class="btn btn-sm"
+                            style="background:#fed700;border:none;color:#333;font-weight:600;border-radius:8px;">
+                            <i class="fas fa-plus me-1"></i>Tạo danh mục đầu tiên
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Điện thoại -->
+            <div class="nav-wrapper">
+
+                <a href="/products" class="nav-item">
+                    <i class="fas fa-mobile-alt nav-icon"></i> Điện thoại
+                    <i class="fas fa-caret-down nav-caret"></i>
+                </a>
+                <div class="mega-menu">
+                    <div class="mega-group">
+                        <h6>Hãng điện thoại</h6>
+                        <div class="mega-items">
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Apple</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Samsung</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Xiaomi</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>OPPO</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Vivo</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Realme</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Nokia</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Tecno</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="mega-group">
+                        <h6>Nhu cầu sử dụng</h6>
+                        <div class="mega-items">
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Chụp ảnh, Quay phim</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Cấu hình cao</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Pin khủng 5000mAh+</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Điện thoại giá rẻ</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Sạc nhanh</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Laptop -->
+            <div class="nav-wrapper">
+                <a href="#" class="nav-item">
+                    <i class="fas fa-laptop nav-icon"></i> Laptop
+                    <i class="fas fa-caret-down nav-caret"></i>
+                </a>
+                <div class="mega-menu">
+                    <div class="mega-group">
+                        <h6>Hãng laptop</h6>
+                        <div class="mega-items">
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Apple (Macbook)</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Asus</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Dell</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>HP</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Lenovo</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>MSI</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Acer</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="mega-group">
+                        <h6>Theo nhu cầu</h6>
+                        <div class="mega-items">
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Văn phòng</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Gaming</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Đồ hoạ, Kỹ thuật</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Học sinh, Sinh viên</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phụ kiện -->
+            <div class="nav-wrapper">
+                <a href="#" class="nav-item">
+                    <i class="fas fa-headphones-alt nav-icon"></i> Phụ kiện
+                    <i class="fas fa-caret-down nav-caret"></i>
+                </a>
+                <div class="mega-menu">
+                    <div class="mega-group">
+                        <h6>Phụ kiện di động</h6>
+                        <div class="mega-items">
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Sạc dự phòng</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Sạc, cáp</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Ốp lưng ĐT</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Miếng dán</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Ốp lưng máy tính bảng</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="mega-group">
+                        <h6>Thiết bị âm thanh</h6>
+                        <div class="mega-items">
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Tai nghe Bluetooth</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Tai nghe dây</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Loa</span>
+                                <span class="badge-hot">Hot</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Micro</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="mega-group">
+                        <h6>Phụ kiện laptop, PC</h6>
+                        <div class="mega-items">
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Hub, cáp chuyển đổi</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Chuột máy tính</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Bàn phím</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Balo, túi chống sốc</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="mega-group">
+                        <h6>Camera</h6>
+                        <div class="mega-items">
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Camera Giám Sát</span>
+                                <span class="badge-hot">Hot</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Camera 4G</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Camera hành trình</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Smartwatch -->
+            <div class="nav-wrapper">
+                <a href="#" class="nav-item">
+                    <i class="fas fa-stopwatch nav-icon"></i> Smartwatch
+                    <i class="fas fa-caret-down nav-caret"></i>
+                </a>
+                <div class="mega-menu">
+                    <div class="mega-group">
+                        <h6>Hãng Smartwatch</h6>
+                        <div class="mega-items">
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Apple Watch</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Samsung</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Garmin</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Xiaomi</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Huawei</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="mega-group">
+                        <h6>Vòng tay thông minh</h6>
+                        <div class="mega-items">
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Xiaomi Mi Band</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Huawei Band</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Đồng hồ -->
+            <div class="nav-wrapper">
+                <a href="#" class="nav-item">
+                    <i class="fas fa-clock nav-icon"></i> Đồng hồ
+                    <i class="fas fa-caret-down nav-caret"></i>
+                </a>
+                <div class="mega-menu">
+                    <div class="mega-group">
+                        <h6>Đồng hồ nam</h6>
+                        <div class="mega-items">
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Casio</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Orient</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Seiko</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Citizen</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="mega-group">
+                        <h6>Đồng hồ nữ</h6>
+                        <div class="mega-items">
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Casio</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Fossil</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Daniel Wellington</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tablet -->
+            <div class="nav-wrapper">
+                <a href="#" class="nav-item">
+                    <i class="fas fa-tablet-alt nav-icon"></i> Tablet
+                    <i class="fas fa-caret-down nav-caret"></i>
+                </a>
+                <div class="mega-menu">
+                    <div class="mega-group">
+                        <h6>Hãng Tablet</h6>
+                        <div class="mega-items">
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>iPad</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Samsung</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Xiaomi</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Lenovo</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="mega-group">
+                        <h6>Theo nhu cầu</h6>
+                        <div class="mega-items">
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Học online</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Chơi game</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Vẽ, Sáng tạo</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Máy cũ, Thu cũ -->
+            <div class="nav-wrapper">
+                <a href="#" class="nav-item">
+                    <i class="fas fa-recycle nav-icon"></i> Máy cũ, Thu cũ
+                    <i class="fas fa-caret-down nav-caret"></i>
+                </a>
+                <div class="mega-menu">
+                    <div class="mega-group">
+                        <h6>Điện thoại cũ</h6>
+                        <div class="mega-items">
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>iPhone cũ</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Samsung cũ</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Xiaomi cũ</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="mega-group">
+                        <h6>Thu mua thiết bị cũ</h6>
+                        <div class="mega-items">
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Thu cũ đổi mới</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Laptop cũ</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Màn hình, Máy in -->
+            <div class="nav-wrapper">
+                <a href="#" class="nav-item">
+                    <i class="fas fa-desktop nav-icon"></i> Màn hình, Máy in
+                    <i class="fas fa-caret-down nav-caret"></i>
+                </a>
+                <div class="mega-menu">
+                    <div class="mega-group">
+                        <h6>Màn hình máy tính</h6>
+                        <div class="mega-items">
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Màn hình văn phòng</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Màn hình gaming</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Màn hình đồ họa</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="mega-group">
+                        <h6>Máy in</h6>
+                        <div class="mega-items">
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>HP</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Canon</span>
+                            </a>
+                            <a href="#" class="mega-sub-item">
+                                <img src="https://placehold.co/32x32" alt="icon">
+                                <span>Epson</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sim, Thẻ cào -->
+            <a href="#" class="nav-item">
+                <i class="fas fa-sim-card nav-icon"></i> Sim, Thẻ cào
+            </a>
+
+        </div>
+    </header>
+
+    <!-- Main Banner & Content Area -->
+    <div class="banner-section">
+        <div class="big-banner-container">
+            <!-- Main Red Banner -->
+            <div style="background: transparent; padding-bottom: 20px;">
+                <img src="/images/banner-horizontal.jpg" class="w-100 rounded" style="display: block;">
+            </div>
+
+            <!-- Content Area -->
+            <div class="main-content" th:insert="${content}">
+                <!-- Page content -->
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-4 pt-4 border-top bg-white">
+        <div class="container" style="max-width: 1200px;">
+            <div class="row" style="font-size: 12px;">
+                <div class="col-md-3">
+                    <p><strong>Tổng đài hỗ trợ</strong> (Miễn phí gọi)</p>
+                    <p>Gọi mua: <strong>1800.1060</strong> (7:30 - 22:00)</p>
+                    <p>Kỹ thuật: <strong>1800.1763</strong> (7:30 - 22:00)</p>
+                    <p>Khiếu nại: <strong>1800.1062</strong> (8:00 - 21:30)</p>
+                </div>
+                <div class="col-md-3">
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-dark text-decoration-none">Giới thiệu công ty</a></li>
+                        <li><a href="#" class="text-dark text-decoration-none">Tuyển dụng</a></li>
+                        <li><a href="#" class="text-dark text-decoration-none">Gửi góp ý, khiếu nại</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p>&copy; 2024 Thế Giới Di Động Clone.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Sakura Effect -->
+    <style>
+        .sakura {
+            position: fixed;
+            top: -10vh;
+            z-index: 9999;
+            user-select: none;
+            pointer-events: none;
+            animation-name: fall, sway;
+            animation-timing-function: linear, ease-in-out;
+            will-change: transform, opacity;
+        }
+
+        @keyframes fall {
+            0% {
+                top: -10vh;
+                opacity: 1;
+            }
+
+            100% {
+                top: 110vh;
+                opacity: 0;
+            }
+        }
+
+        @keyframes sway {
+            0% {
+                transform: translateX(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateX(50px) rotate(180deg);
+            }
+
+            100% {
+                transform: translateX(0) rotate(360deg);
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sakuraContainer = document.body;
+            const createSakura = () => {
+                const sakura = document.createElement('div');
+                sakura.classList.add('sakura');
+
+                // Randomize appearance
+                const size = Math.random() * 10 + 10 + 'px';
+                sakura.style.width = size;
+                sakura.style.height = size;
+                sakura.style.left = Math.random() * 100 + 'vw';
+                sakura.style.background = '#ffb7b2';
+                sakura.style.borderRadius = '50% 50% 0 50%'; // Simple petal shape
+                sakura.style.opacity = Math.random() * 0.5 + 0.3;
+
+                // Randomize animation
+                const duration = Math.random() * 5 + 5 + 's';
+                sakura.style.animationDuration = `${duration}, ${Math.random() * 3 + 2}s`;
+                sakura.style.animationDelay = '0s';
+
+                sakuraContainer.appendChild(sakura);
+
+                // Remove after animation
+                setTimeout(() => {
+                    sakura.remove();
+                }, parseFloat(duration) * 1000);
+            };
+
+            setInterval(createSakura, 300); // Add a new petal every 300ms
+        });
+    </script>
+</body>
+
+</html>
