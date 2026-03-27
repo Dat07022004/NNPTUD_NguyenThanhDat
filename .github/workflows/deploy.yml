@@ -44,7 +44,7 @@ jobs:
             ${{ env.DOCKERHUB_USERNAME }}/nguyenthanhdatdocker:latest
             ${{ env.DOCKERHUB_USERNAME }}/nguyenthanhdatdocker:${{ github.sha }}
 
-                  - name: Triển khai lên DevOps Classroom
+      - name: Triển khai lên DevOps Classroom
         run: |
           REPO="dat07022004/nguyenthanhdatdocker"
           CONTAINER_PORT=80
